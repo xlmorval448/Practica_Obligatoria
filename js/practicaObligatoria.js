@@ -55,35 +55,15 @@ const gestor = new Gestor();
 
 function cargaDatosIniciales() {
   catalogo.addProducto(1, "Aceite Oliva Virgen Extra 1l (Caja 20)", 178.15, 0);
-  catalogo.addProducto(
-    2,
-    "Aceite Oliva Virgen Extra 700ml (Caja 30)",
-    208.5,
-    0
-  );
+  catalogo.addProducto(2, "Aceite Oliva Virgen Extra 700ml (Caja 30)", 208.5, 0);
   catalogo.addProducto(3, "Aceite Oliva Virgen Extra 5l (Caja 6)", 247.5, 0);
   catalogo.addProducto(4, "Aceite Oliva 1l (Caja 20)", 109.25, 0);
   catalogo.addProducto(5, "Aceituna Gordal 340gr (Caja de 50)", 180.75, 1);
-  catalogo.addProducto(
-    6,
-    "Aceituna Gordal deshuesada 350gr (Caja de 50)",
-    205.45,
-    1
-  );
+  catalogo.addProducto(6, "Aceituna Gordal deshuesada 350gr (Caja de 50)", 205.45, 1);
   catalogo.addProducto(7, "Aceituna Manzanilla 250 gr (Caja de 50)", 124.85, 1);
-  catalogo.addProducto(
-    8,
-    "Aceituna Manzanilla deshuesada 250 gr (Caja de 50)",
-    141.35,
-    1
-  );
+  catalogo.addProducto(8, "Aceituna Manzanilla deshuesada 250 gr (Caja de 50)", 141.35, 1);
   catalogo.addProducto(9, "Aceituna Negra 350gr (Caja de 50)", 87.5, 1);
-  catalogo.addProducto(
-    10,
-    "Aceituna Negra deshuesada 350gr (Caja de 50)",
-    99.35,
-    1
-  );
+  catalogo.addProducto(10, "Aceituna Negra deshuesada 350gr (Caja de 50)", 99.35, 1);
   catalogo.addProducto(11, "Mayonesa 350gr (Caja de 50)", 124.45, 2);
   catalogo.addProducto(12, "Mayonesa 1Kg (Caja de 30)", 178.65, 2);
   catalogo.addProducto(13, "Salsa Cocktail 350gr (Caja de 50)", 99.65, 2);
@@ -91,3 +71,99 @@ function cargaDatosIniciales() {
   catalogo.addProducto(15, "Salsa Alioli 350 gr (Caja de 50)", 113.75, 2);
   catalogo.addProducto(16, "Salsa Barbacoa 500gr (Caja de 30)", 67.5, 2);
 }
+
+const frmComercial = document.getElementById("frmComercial");
+const comercialesSelect = frmComercial.elements["comerciales"];
+const frmControles = document.getElementById("frmControles");
+const categoriasSelect = frmControles.elements["categorias"];
+const productosSelect = frmControles.elements["productos"];
+
+
+function cargarFormularios() {
+  for (let i = 0; i < comerciales.length; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.text = comerciales[i];
+    comercialesSelect.add(option);
+  }
+
+  for (let i = 0; i < categorias.length; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    option.text = categorias[i];
+    categoriasSelect.add(option);
+  }
+  cargarProductosPorCategoria(categoriasSelect.value);
+  obtenerClientePorComercial(comercialesSelect.value);
+}
+
+function obtenerClientePorComercial(idComercial) {
+  const divClientes = document.getElementById("clientes");
+  const clientesDelComercial = clientes[idComercial];
+
+  const clientesAnteriores = divClientes.querySelectorAll(".cliente");
+
+  clientesAnteriores.forEach(clienteDiv => {
+    clienteDiv.remove();
+  });
+
+  for (let i = 0; i < clientesDelComercial.length; i++) {
+    const div = document.createElement("div");
+    div.textContent = clientesDelComercial[i];
+    div.classList.add("cliente");
+    div.classList.add("pagado");
+    divClientes.appendChild(div);
+  }
+}
+
+function seleccionarCliente() {
+  const divClientes = document.getElementById("clientes");
+
+  if (!divClientes) {
+    return;
+  }
+
+  const clientesDivs = divClientes.querySelectorAll(".cliente");
+
+  clientesDivs.forEach(clienteDiv => {
+    clienteDiv.addEventListener("click", function () {
+      if (this.classList.contains("pagado")) {
+        this.classList.remove("pagado");
+        this.classList.add("pendiente");
+      }
+    });
+  });
+}
+
+function cargarProductosPorCategoria(valorCategoria) {
+  const idCategoriaSeleccionada = parseInt(valorCategoria);
+
+  productosSelect.innerHTML = "";
+
+  for (let i = 0; i < catalogo.productos.length; i++) {
+    const producto = catalogo.productos[i];
+
+    if (producto.idCategoria === idCategoriaSeleccionada) {
+
+      const option = document.createElement("option");
+      option.value = producto.idProducto_1;
+      option.text = producto.nombreProducto;
+      productosSelect.add(option);
+    }
+  }
+}
+
+cargaDatosIniciales();
+cargarFormularios();
+
+comercialesSelect.addEventListener("change", function () {
+  obtenerClientePorComercial(this.value);
+});
+
+categoriasSelect.addEventListener("change", function () {
+  cargarProductosPorCategoria(this.value);
+});
+
+document.addEventListener("DOMContentLoaded", seleccionarCliente);
+
+
