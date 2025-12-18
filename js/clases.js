@@ -10,10 +10,10 @@ class Producto {
         this._idCategoria = idCategoria;
     }
 
-    get idProducto_1() {
+    get idProducto() {
         return this._idProducto;
     }
-    set idProducto_1(value) {
+    set idProducto(value) {
         this._idProducto = value;
     }
     get nombreProducto() {
